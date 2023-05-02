@@ -1,6 +1,7 @@
 from tkinter import ttk
 import tkinter as tk
 from tkinter.simpledialog import askstring
+from tkinter import messagebox
 from db.postgres.connector import postgresDB
 
 class DecanatMenu(tk.Tk): 
@@ -38,17 +39,31 @@ class DecanatMenu(tk.Tk):
         
         self.but_create = tk.Button(text="Додати", command=self.add_student)
         self.but_create.pack()
+        self.but_create = tk.Button(text="Змінити", command=self.add_student)
+        self.but_create.pack()
+        self.but_create = tk.Button(text="Видалити", command=self.delete_student)
+        self.but_create.pack()
         self.table.pack()
 
     def add_student(self):
         course = askstring('Курс', 'Введіть курс студента')
         group = askstring('Група', 'Введіть групу студента')
-        name = askstring('Прізвище та ім\'я', 'Введіть ім\'я студента')
+        name = askstring('Прізвище та ім\'я', 'Введіть прізвище та ім\'я студента')
         subject = askstring('Дисципліна', 'Введіть дисципліну')
         data = [3, course, group, name, subject]
         postgresDB.create(data)
-        print(data)
         self.table.insert("", tk.END, values=data)
+    
+    def delete_student(self):
+        selected= self.table.selection()
+        for item in selected:
+            _id = self.table.item(item, "values")[0]
+            print(_id)
+            self.table.delete(item)
+            postgresDB.delete(_id)
+
+    def error(self):
+        messagebox.showerror('ПОМИЛКА', 'Не існує такого студента в базі!')
 
 if __name__ == "__main__":
     app = DecanatMenu()

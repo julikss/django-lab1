@@ -19,15 +19,15 @@ class PostgresDB:
 
     def update(self, data):
         cur = self.conn.cursor()
-        cur.execute("UPDATE decanat1 course = %s, group = %s, student = %s, subject = %s WHERE id = %s", 
+        cur.execute("UPDATE decanat1 course = %s, group = %s, student = %s, subject = %s WHERE student_id = %s", 
                     (data[1], data[2], data[3], data[4], data[0]))
-        cur.commit()
+        cur.close()
         print("UPDATED")
     
     def delete(self, id):
         cur = self.conn.cursor()
-        cur.execute("DELETE FROM decanat1 WHERE id = %s", id)
-        cur.commit()
+        cur.execute("DELETE FROM decanat1 WHERE student_id = %s", [id])
+        cur.close()
         print("DELETED")
 
     def close(self):
