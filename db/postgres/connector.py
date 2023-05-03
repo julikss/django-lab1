@@ -3,7 +3,6 @@ import psycopg2
 class PostgresDB:
     def __init__(self, path: str):
         self.conn = psycopg2.connect(path)
-        #cur.execute("SELECT name FROM decanatdb WHERE type='table' AND name='decanat1'")
     
     def read(self):
         cur = self.conn.cursor()
@@ -19,7 +18,7 @@ class PostgresDB:
 
     def update(self, data):
         cur = self.conn.cursor()
-        cur.execute("UPDATE decanat1 course = %s, group = %s, student = %s, subject = %s WHERE student_id = %s", 
+        cur.execute("UPDATE decanat1 SET course = %s, group_name = %s, student = %s, subject = %s WHERE student_id = %s", 
                     (data[1], data[2], data[3], data[4], data[0]))
         cur.close()
         print("UPDATED")
@@ -29,8 +28,12 @@ class PostgresDB:
         cur.execute("DELETE FROM decanat1 WHERE student_id = %s", [id])
         cur.close()
         print("DELETED")
+    
+    def get_student(self, id):
+        cur = self.conn.cursor()
+        cur.execute("SELECT * FROM decanat1 WHERE student_id = %s", [id])
+        student = cur.fetchall()
+        return student
 
-    def close(self):
-        self.cur.close()
 
 postgresDB = PostgresDB("dbname=decanatdb user=postgres password=password")
