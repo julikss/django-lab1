@@ -3,12 +3,33 @@ import psycopg2
 class PostgresDB:
     def __init__(self, path: str):
         self.conn = psycopg2.connect(path)
+        self.create_table()
     
+    def create_table(self):
+        cur = self.conn.cursor()
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS db2 (
+                student_id INTEGER PRIMARY KEY NOT NULL,
+                course INTEGER NOT NULL,
+                group_name TEXT NOT NULL,
+                student TEXT NOT NULL,
+                subject TEXT NOT NULL
+            )''')
+        cur.close()
+        print('CREATED TABLE')
+
     def read(self):
         cur = self.conn.cursor()
         cur.execute("SELECT * FROM db1")
         records = cur.fetchall()
-        cur.close()
+        empty_table = records is None
+        if empty_table:
+            example = open('db/postgres/example.sql', 'r')
+            script = example.read()
+
+            self.conn.executescript(script)
+            self.conn.commit()
+
         return records
     
     def create(self, data):
