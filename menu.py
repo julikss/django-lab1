@@ -8,7 +8,7 @@ class DecanatMenu(tk.Tk):
         super().__init__()
 
         self.title("Decanat DataBase")
-        self.geometry("600x360")
+        self.geometry("600x450")
         self['bg'] = '#F2D0EC'
         
         #creating table
@@ -172,6 +172,17 @@ class DecanatMenu(tk.Tk):
         self.but_update.pack(pady=2, ipadx=59)
         self.but_delete = tk.Button(text="Видалити студента з бази", command=delete_student)
         self.but_delete.pack(pady=2, ipadx=50)
+        self.but_sqlite = tk.Button(text="Експорт в SQLite", command=self.export_to_sqlite)
+        self.but_sqlite.pack(pady=2, ipadx=50)
+        self.but_mysql = tk.Button(text="Експорт в MySQL", command=self.export_to_mysql)
+        self.but_mysql.pack(pady=2, ipadx=50)
+
+    def export_to_sqlite(self):
+        print('EXPORTED TO SQLITE')
+
+    
+    def export_to_mysql(self):
+        print('EXPORTED TO MYSQL')
     
 
 if __name__ == "__main__":
