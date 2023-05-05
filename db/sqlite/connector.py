@@ -14,7 +14,6 @@ class SqliteDB:
                 student TEXT NOT NULL,
                 subject TEXT NOT NULL
             )''')
-        print('CREATED TABLE')
     
     def insert(self, data):
         self.conn.execute('''
@@ -24,16 +23,14 @@ class SqliteDB:
                 group_name, 
                 student, 
                 subject) VALUES (?, ?, ?, ?, ?)''', data)
-        print('INSERTED')
 
     def delete_records(self):
         self.conn.execute('DELETE FROM db2')
-        print('DELETED')
 
     def select_all_records(self):
         cur = self.conn.execute('SELECT * FROM db2')
         records = cur.fetchall()
-        print(records)
+        return records
 
     def __del__(self):
         self.conn.close() 

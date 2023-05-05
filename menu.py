@@ -2,6 +2,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter import messagebox
 from db.postgres.connector import postgresDB
+from db.sqlite.connector import sqliteDB
 
 class DecanatMenu(tk.Tk): 
     def __init__(self):
@@ -67,7 +68,7 @@ class DecanatMenu(tk.Tk):
 
             #function for adding
             def add_student():
-                data = [self.count+1, st_course.get(), st_group.get(), st_name.get(), st_subject.get()]
+                data = [self.count, st_course.get(), st_group.get(), st_name.get(), st_subject.get()]
                 #clear the text boxes
                 st_course.delete(0, tk.END)
                 st_group.delete(0, tk.END)
@@ -165,6 +166,84 @@ class DecanatMenu(tk.Tk):
                 self.table.delete(item)
                 postgresDB.delete(_id)
 
+        def export_to_mysql():
+            records2 = sqliteDB.select_all_records()
+            
+            #for row in records2-1:
+            #    mysqlDB.insert(row)
+            print('EXPORTED TO MYSQL')
+
+            self.win = tk.Tk()
+            self.win.title('MySQL')
+            self.win.geometry("400x350")
+            self.win['bg'] = '#DFF0E9'
+
+            #creating table
+            self.table = ttk.Treeview(self.win)
+            self.table['columns']= ('id', 'course','group', 'student')
+            self.table.column("#0", width=0,  stretch=tk.NO)
+            self.table.column("id", anchor=tk.CENTER, width=80)
+            self.table.column("course", anchor=tk.CENTER, width=50)
+            self.table.column("group", anchor=tk.CENTER, width=50)
+            self.table.column("student", anchor=tk.CENTER, width=200)
+
+            self.table.heading("id",text="ID студента")
+            self.table.heading("course",text="Курс")
+            self.table.heading("group",text="Група")
+            self.table.heading("student",text="Прізвище та ім'я студента")
+
+            self.table.pack(pady=15)
+            
+            #counter for number of records
+            self.count = 0
+            #records3 = mysqlDB.select_all_records()
+            #filling the table
+            #for record in records3:
+            #    self.table.insert("", tk.END, values=record)
+            #    self.count+=1
+            
+
+        def export_to_sqlite():
+            records1 = postgresDB.read()
+            sqliteDB.create_table()
+            for row in records1:
+                sqliteDB.insert(row)
+            
+            print('EXPORTED TO SQLITE')
+
+            self.win = tk.Tk()
+            self.win.title('SQLite')
+            self.win.geometry("600x350")
+            self.win['bg'] = '#DFF0E9'
+
+            #creating table
+            self.table = ttk.Treeview(self.win)
+            self.table['columns']= ('id', 'course','group', 'student', 'subject')
+            self.table.column("#0", width=0,  stretch=tk.NO)
+            self.table.column("id", anchor=tk.CENTER, width=80)
+            self.table.column("course", anchor=tk.CENTER, width=50)
+            self.table.column("group", anchor=tk.CENTER, width=50)
+            self.table.column("student", anchor=tk.CENTER, width=200)
+            self.table.column("subject", anchor=tk.CENTER, width=200)
+
+            self.table.heading("id",text="ID студента")
+            self.table.heading("course",text="Курс")
+            self.table.heading("group",text="Група")
+            self.table.heading("student",text="Прізвище та ім'я студента")
+            self.table.heading("subject",text="Дисципліна")
+
+            self.table.pack(pady=15)
+            but_mysql = tk.Button(self.win, text="Експорт в MySQL", command=export_to_mysql)
+            but_mysql.pack(pady=2, ipadx=50)
+            
+
+            #counter for number of records
+            self.count = 0
+            records2 = sqliteDB.select_all_records()
+            #filling the table
+            for record in records2:
+                self.table.insert("", tk.END, values=record)
+                self.count+=1      
 
         self.but_create = tk.Button(text="Додати студента", command=open_add_win)
         self.but_create.pack(pady=2, ipadx=74)
@@ -172,18 +251,8 @@ class DecanatMenu(tk.Tk):
         self.but_update.pack(pady=2, ipadx=59)
         self.but_delete = tk.Button(text="Видалити студента з бази", command=delete_student)
         self.but_delete.pack(pady=2, ipadx=50)
-        self.but_sqlite = tk.Button(text="Експорт в SQLite", command=self.export_to_sqlite)
-        self.but_sqlite.pack(pady=2, ipadx=50)
-        self.but_mysql = tk.Button(text="Експорт в MySQL", command=self.export_to_mysql)
-        self.but_mysql.pack(pady=2, ipadx=50)
-
-    def export_to_sqlite(self):
-        print('EXPORTED TO SQLITE')
-
-    
-    def export_to_mysql(self):
-        print('EXPORTED TO MYSQL')
-    
+        self.but_sqlite = tk.Button(text="Експорт в SQLite", command=export_to_sqlite)
+        self.but_sqlite.pack(pady=2, ipadx=50)    
 
 if __name__ == "__main__":
     app = DecanatMenu()
