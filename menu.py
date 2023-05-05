@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from db.postgres.connector import postgresDB
 from db.sqlite.connector import sqliteDB
+from db.mysql.connector import mysqlDB
 
 class DecanatMenu(tk.Tk): 
     def __init__(self):
@@ -169,8 +170,8 @@ class DecanatMenu(tk.Tk):
         def export_to_mysql():
             records2 = sqliteDB.select_all_records()
             
-            #for row in records2-1:
-            #    mysqlDB.insert(row)
+            for row in records2-1:
+                mysqlDB.insert(row)
             print('EXPORTED TO MYSQL')
 
             self.win = tk.Tk()
@@ -196,11 +197,11 @@ class DecanatMenu(tk.Tk):
             
             #counter for number of records
             self.count = 0
-            #records3 = mysqlDB.select_all_records()
+            records3 = mysqlDB.select_all_records()
             #filling the table
-            #for record in records3:
-            #    self.table.insert("", tk.END, values=record)
-            #    self.count+=1
+            for record in records3:
+                self.table.insert("", tk.END, values=record)
+                self.count+=1
             
 
         def export_to_sqlite():
