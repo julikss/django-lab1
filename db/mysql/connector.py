@@ -20,7 +20,6 @@ class MysqlDB:
             )'''
         cur.execute(query)
         cur.close()
-        print('CREATED TABLE')
          
     def select_all_records(self):
         cur = self.conn.cursor()
@@ -32,11 +31,9 @@ class MysqlDB:
 
     def insert(self, record):
         cur = self.conn.cursor()
-        query = 'INSERT INTO db3 (student_id, course, group_name, student) VALUES (?,?,?,?)'
+        query = 'INSERT INTO db3 (student_id, course, group_name, student) VALUES (%s, %s, %s, %s)'
         cur.execute(query, record)
-        records = cur.fetchall()
         cur.close()
-        return records
     
     def delete_records(self):
         cur = self.conn.cursor()

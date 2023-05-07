@@ -1,3 +1,5 @@
+SET CLIENT_ENCODING TO 'WIN1251';
+
 INSERT INTO db1
   (student_id, course, group_name, student, subject)
 VALUES

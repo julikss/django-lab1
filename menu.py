@@ -34,7 +34,6 @@ class DecanatMenu(tk.Tk):
         #counter for number of records
         self.count = 0
         records = postgresDB.read()
-
         #filling the table
         for record in records:
             self.table.insert("", tk.END, values=record)
@@ -159,7 +158,7 @@ class DecanatMenu(tk.Tk):
             self.add_btn = tk.Button(self.win_edit, text="Оновити", command=update_student)
             self.add_btn.grid(row=6, column=0, columnspan=2, padx=20, pady=10, ipadx=100)
 
-
+        #function for deleting
         def delete_student():
             selected = self.table.selection()
             for item in selected:
@@ -167,12 +166,11 @@ class DecanatMenu(tk.Tk):
                 self.table.delete(item)
                 postgresDB.delete(_id)
 
+        #second export to mysql (4 fields)
         def export_to_mysql():
             records2 = sqliteDB.select_all_records()
-            
-            for row in records2-1:
-                mysqlDB.insert(row)
-            print('EXPORTED TO MYSQL')
+            for row in records2:
+                mysqlDB.insert(row[:4])
 
             self.win = tk.Tk()
             self.win.title('MySQL')
@@ -203,14 +201,12 @@ class DecanatMenu(tk.Tk):
                 self.table.insert("", tk.END, values=record)
                 self.count+=1
             
-
+        #first export to sqlite
         def export_to_sqlite():
             records1 = postgresDB.read()
             sqliteDB.create_table()
             for row in records1:
                 sqliteDB.insert(row)
-            
-            print('EXPORTED TO SQLITE')
 
             self.win = tk.Tk()
             self.win.title('SQLite')
@@ -236,7 +232,6 @@ class DecanatMenu(tk.Tk):
             self.table.pack(pady=15)
             but_mysql = tk.Button(self.win, text="Експорт в MySQL", command=export_to_mysql)
             but_mysql.pack(pady=2, ipadx=50)
-            
 
             #counter for number of records
             self.count = 0
